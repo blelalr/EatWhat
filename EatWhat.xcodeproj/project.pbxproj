@@ -12,6 +12,7 @@
 		508FD4D91E6FF32C00BE8DED /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 508FD4D71E6FF32C00BE8DED /* Main.storyboard */; };
 		508FD4DB1E6FF32C00BE8DED /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 508FD4DA1E6FF32C00BE8DED /* Assets.xcassets */; };
 		508FD4DE1E6FF32C00BE8DED /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 508FD4DC1E6FF32C00BE8DED /* LaunchScreen.storyboard */; };
+		508FD4E81E700E1200BE8DED /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508FD4E71E700E1200BE8DED /* LocationManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		508FD4DA1E6FF32C00BE8DED /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		508FD4DD1E6FF32C00BE8DED /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		508FD4DF1E6FF32C00BE8DED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		508FD4E71E700E1200BE8DED /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +56,7 @@
 		508FD4D21E6FF32C00BE8DED /* EatWhat */ = {
 			isa = PBXGroup;
 			children = (
+				508FD4E61E700DC400BE8DED /* manager */,
 				508FD4D31E6FF32C00BE8DED /* AppDelegate.swift */,
 				508FD4D51E6FF32C00BE8DED /* ViewController.swift */,
 				508FD4D71E6FF32C00BE8DED /* Main.storyboard */,
@@ -62,6 +65,14 @@
 				508FD4DF1E6FF32C00BE8DED /* Info.plist */,
 			);
 			path = EatWhat;
+			sourceTree = "<group>";
+		};
+		508FD4E61E700DC400BE8DED /* manager */ = {
+			isa = PBXGroup;
+			children = (
+				508FD4E71E700E1200BE8DED /* LocationManager.swift */,
+			);
+			name = manager;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -139,6 +150,7 @@
 			files = (
 				508FD4D61E6FF32C00BE8DED /* ViewController.swift in Sources */,
 				508FD4D41E6FF32C00BE8DED /* AppDelegate.swift in Sources */,
+				508FD4E81E700E1200BE8DED /* LocationManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -300,6 +312,7 @@
 				508FD4E41E6FF32C00BE8DED /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
