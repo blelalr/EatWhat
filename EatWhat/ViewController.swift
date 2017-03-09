@@ -10,46 +10,26 @@ import UIKit
 import MapKit
 import CoreLocation
 
-class ViewController: UIViewController, CLLocationManagerDelegate {
+class ViewController: UIViewController, LocationUpdateProtocol {
 
     @IBOutlet weak var sliderBar: UISlider!
     @IBOutlet weak var distanceLable: UILabel!
     @IBOutlet  var map: MKMapView!
-    let locationManager = CLLocationManager()
+    
+    var currentLocation : CLLocation!
+    
     @IBAction func searchClickListener(_ sender: Any) {
-        
-        locationManager.delegate = self
-        
-        if CLLocationManager.authorizationStatus() == .notDetermined {
-            locationManager.requestWhenInUseAuthorization()
-        }
-        
-        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
-        locationManager.requestLocation()
 
-    }
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        
-        print("didUpdateLocations")
-        
-        let location = locations.first!
-        print("\(location.coordinate)")
+        let locationMgr = LocationManager.SharedManager
+        locationMgr.delegate = self
+        locationMgr.requestLocation()
     }
     
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        
-        print("didFailWithError")
-        
+    //LocationUpdateProtocol 
+    func locationDidUpdateToLocation(location: CLLocation) {
+        currentLocation = location
+        print("Latitude : \(self.currentLocation.coordinate.latitude)")
+        print("Longitude : \(self.currentLocation.coordinate.longitude)")
     }
 
 }
