@@ -18,7 +18,7 @@ class ViewController: UIViewController{
     @IBOutlet weak var resultDistanceLabel: UILabel!
     @IBOutlet weak var resultTimeLabel: UILabel!
     
-    @IBOutlet  var map: MKMapView!
+    @IBOutlet weak var map: MKMapView!
     
     let distance = 0// 0.3~2.0 km default 0.5km
     
@@ -85,12 +85,29 @@ class ViewController: UIViewController{
                     
                     print("\(firstResult)")
                     
+                    let pointAnnotation  = MKPointAnnotation()
+                    pointAnnotation.coordinate = destionationCoordinate
+                    self.map.removeAnnotations(self.map.annotations)
+                    self.map.addAnnotation(pointAnnotation)
+                    self.map.showsUserLocation = true
+                    
+                    let degree = 1/111 * 0.5
+                    var mapRegion = MKCoordinateRegion()
+                    mapRegion.center = destionationCoordinate
+                    mapRegion.span.latitudeDelta = degree
+                    mapRegion.span.longitudeDelta = degree
+                    
+                    self.map.setRegion(mapRegion, animated: true)
+                    
+                
+                    
+                    
                 })
                 
                 
-                //                    self.storeNameLabel.text = firstResult["name"] as! String
-                //                    self.ratingLabel.text = "\(firstResult["rating"] as! Double)"
-                //                    self.addressLabel.text = firstResult["address"] as! String
+//                self.storeNameLabel.text = firstResult["name"] as! String
+//                self.ratingLabel.text = "\(firstResult["rating"] as! Double)"
+//                self.addressLabel.text = firstResult["address"] as! String
             }
             
         })
