@@ -10,7 +10,7 @@ import UIKit
 import MapKit
 import CoreLocation
 
-class ViewController: UIViewController, LocationUpdateProtocol {
+class ViewController: UIViewController{
 
     @IBOutlet weak var sliderBar: UISlider!
     @IBOutlet weak var distanceLable: UILabel!
@@ -19,37 +19,19 @@ class ViewController: UIViewController, LocationUpdateProtocol {
     let distance = 0// 0.3~2.0 km default 0.5km
     var currentLocation : CLLocation?
     
+    let locationManager = LocationManager()
+    
     @IBAction func sliderValueChange(_ sender: UISlider) {
         distanceLable.text = String(format: "%.1f", sender.value)
         
     }
     @IBAction func searchClickListener(_ sender: Any) {
-
-        let locationMgr = LocationManager.SharedManager
-        locationMgr.delegate = self
-        locationMgr.requestLocation()
+//                     .requestLocation(completionHandler: { currentLocation in }
+        locationManager.requestLocation { (currentLocation) in
+            print("from ViewController: \(currentLocation)")
+        }
         
     }
     
-    //LocationUpdateProtocol
-    func locationDidUpdateToLocation(location: CLLocation) {
-        currentLocation = location
-        let latitude  = currentLocation?.coordinate.latitude
-        let longitude = currentLocation?.coordinate.longitude
-        
-        print("******* Current Location *******")
-        print("Latitude : \(latitude)")
-        print("Longitude : \(longitude)")
-        print("*********************************")
-        
-//        setUI()
-    }
-    
-    func setUI(){
-    
-        
-        
-    }
-
 }
 

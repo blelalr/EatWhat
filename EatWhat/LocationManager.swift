@@ -1,32 +1,39 @@
-import MapKit
-
-protocol LocationUpdateProtocol {
-    func locationDidUpdateToLocation(location : CLLocation)
-}
+import UIKit
+import CoreLocation
 
 class LocationManager: NSObject, CLLocationManagerDelegate {
     
-    static let SharedManager = LocationManager()
-    private var locationManager = CLLocationManager()
-    var currentLocation : CLLocation?
-    var delegate : LocationUpdateProtocol!
+    let locationManager = CLLocationManager()
+    var completionHandler: ((CLLocation) -> Void)?
     
-    private override init () {
+    var isRequestingLocation = false
+    
+    override init() {
         super.init()
-        self.locationManager.delegate = self
-        if CLLocationManager.authorizationStatus() == .notDetermined {
-            self.locationManager.requestWhenInUseAuthorization()
-        }
-        self.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        locationManager.delegate = self
     }
     
-    func requestLocation(){
+    func requestLocation(completionHandler: @escaping (CLLocation) -> Void) {
+        self.completionHandler = completionHandler
+        isRequestingLocation = true
+        
+        if CLLocationManager.authorizationStatus() == .notDetermined {
+            locationManager.requestWhenInUseAuthorization()
+        }
+        
+        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
         locationManager.requestLocation()
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        self.currentLocation = locations.first!
-        self.delegate.locationDidUpdateToLocation(location: self.currentLocation!)
+        
+        if !isRequestingLocation {
+            return
+        }
+        
+        isRequestingLocation = false
+        let location = locations.first!
+        completionHandler?(location)
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
@@ -36,4 +43,3 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     }
     
 }
-
