@@ -20,6 +20,7 @@ class ViewController: UIViewController{
     
     @IBOutlet weak var address: UILabel!
     @IBOutlet weak var map: MKMapView!
+    @IBOutlet weak var storeImage: UIImageView!
     
     let distance = 0// 0.3~2.0 km default 0.5km
     let locationManager = LocationManager()
@@ -74,8 +75,12 @@ class ViewController: UIViewController{
                             self.setData(result: results[randomIndex])
                         }
                         OperationQueue().addOperation {
+                            self.getStoreImageFromURL(result: results[randomIndex])
+                        }
+                        OperationQueue().addOperation {
                             self.drawMap(result: results[randomIndex], curLocation: curLocation)
                         }
+                        
                     })
                 }
                 
@@ -108,10 +113,10 @@ class ViewController: UIViewController{
         request.destination = destinationMapItem
         request.transportType = .walking
         
-//        let directions = MKDirections(request: request)
-//        directions.calculate(completionHandler: { (response : MKDirectionsResponse?, error : Error?) in
-//            response?.routes.first?.polyline
-//        })
+        //        let directions = MKDirections(request: request)
+        //        directions.calculate(completionHandler: { (response : MKDirectionsResponse?, error : Error?) in
+        //            response?.routes.first?.polyline
+        //        })
         
         
         let directions = MKDirections(request: request)
@@ -124,6 +129,11 @@ class ViewController: UIViewController{
             
             let response = response!
             print("結果: \(response.expectedTravelTime / 60.0), \(response.distance)")
+            DispatchQueue.main.async {
+                self.resultTimeLabel.text = "\(String(format: "%.1f", response.expectedTravelTime / 60.0)) 分鐘"
+                self.resultDistanceLabel.text = "\(response.distance) 公尺"
+            }
+            
             
             let pointAnnotation  = MKPointAnnotation()
             pointAnnotation.coordinate = destionationCoordinate
@@ -140,6 +150,25 @@ class ViewController: UIViewController{
             self.map.setRegion(mapRegion, animated: true)
             
         })
+    }
+
+    
+    func getStoreImageFromURL(result: [String : Any]){
+        var imageData = (data: Data())
+        let url = URL(string: result["photo"] as! String)
+        let session = URLSession.shared
+        let dataTask = session.dataTask(with: url!, completionHandler: { (data, response, error) in
+            imageData.append(data!)
+        
+            if error == nil{
+                DispatchQueue.main.async {
+                    self.storeImage.image = UIImage(data: imageData)
+                }
+            }
+            
+        })
+        dataTask.resume()
+        
     }
     
 }
