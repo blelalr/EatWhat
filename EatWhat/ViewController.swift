@@ -8,8 +8,20 @@
 
 import UIKit
 import MapKit
+class StoreListCell: UITableViewCell{
+    @IBOutlet weak var cellStoreName: UILabel!
+    @IBOutlet weak var cellRate: UILabel!
+    @IBOutlet weak var cellDistance: UILabel!
+    @IBOutlet weak var cellTime: UILabel!
+    @IBOutlet weak var cellAddress: UILabel!
+    @IBOutlet weak var cellImage: UIImageView!
+    
+    @IBAction func cellActionCall(_ sender: Any) {
+        
+    }
+}
 
-class ViewController: UIViewController{
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
 
     @IBOutlet weak var sliderBar: UISlider!
     @IBOutlet weak var distanceLable: UILabel!
@@ -25,12 +37,15 @@ class ViewController: UIViewController{
     let distance = 0// 0.3~2.0 km default 0.5km
     let locationManager = LocationManager()
     var phone: String?
-    
     let queue = DispatchQueue.global(qos: .background)
+    var resultList: [[String: Any]]?
+        
+        
     var time:DispatchTime! {
         return DispatchTime.now() + 1.0 // seconds
     }
     
+        
     @IBAction func sliderValueChange(_ sender: UISlider) {
         distanceLable.text = String(format: "%.1f", sender.value)
         
@@ -50,7 +65,31 @@ class ViewController: UIViewController{
         }
     }
     
-    func startTask(curLocation: CLLocation){
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1;
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return (resultList?.count)!
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "StoreListCell", for: indexPath) as! StoreListCell
+        if let result = self.resultList?[indexPath.row] {
+            cell.cellStoreName.text = (result["name"] as! String)
+            cell.cellRate.text = "\(result["rating"] as! Double)"
+            cell.cellAddress.text = (result["address"] as! String)
+            self.phone = (result["phone"] as! String)
+        }
+        return cell;
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+    }
+    
+    
+    func startTask(curLocation: CLLocation) {
         let distance = self.sliderBar.value
         let session = URLSession.shared
         
@@ -68,8 +107,11 @@ class ViewController: UIViewController{
                 let data = data!
                 
                 if let jsonObject = try? JSONSerialization.jsonObject(with: data, options: .mutableContainers), let results = jsonObject as? [[String: Any]] {
+                    self.resultList = results
+                    
                     let randomIndex = Int(arc4random_uniform(UInt32(results.count)))
                     print("\(results[randomIndex])")
+                    
                     DispatchQueue.main.asyncAfter(deadline: self.time, execute:{
                         DispatchQueue.main.async {
                             self.setData(result: results[randomIndex])
@@ -91,10 +133,10 @@ class ViewController: UIViewController{
     }
     
     func setData(result:[String: Any]){
-        self.storeLabel.text = (result["name"] as! String)
-        self.rateLabel.text = "\(result["rating"] as! Double)"
-        self.address.text = (result["address"] as! String)
-        self.phone = (result["phone"] as! String)
+//        self.storeLabel.text = (result["name"] as! String)
+//        self.rateLabel.text = "\(result["rating"] as! Double)"
+//        self.address.text = (result["address"] as! String)
+//        self.phone = (result["phone"] as! String)
     }
     
     func drawMap(result: [String : Any], curLocation: CLLocation){
@@ -130,8 +172,8 @@ class ViewController: UIViewController{
             let response = response!
             print("結果: \(response.expectedTravelTime / 60.0), \(response.distance)")
             DispatchQueue.main.async {
-                self.resultTimeLabel.text = "\(String(format: "%.1f", response.expectedTravelTime / 60.0)) 分鐘"
-                self.resultDistanceLabel.text = "\(Int(response.distance)) 公尺"
+//                self.resultTimeLabel.text = "\(String(format: "%.1f", response.expectedTravelTime / 60.0)) 分鐘"
+//                self.resultDistanceLabel.text = "\(Int(response.distance)) 公尺"
             }
             
             
@@ -162,7 +204,7 @@ class ViewController: UIViewController{
         
             if error == nil{
                 DispatchQueue.main.async {
-                    self.storeImage.image = UIImage(data: imageData)
+//                    self.storeImage.image = UIImage(data: imageData)
                 }
             }
             
