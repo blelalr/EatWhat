@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		17ADC2071E8004DB008132A2 /* MyDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17ADC2061E8004DB008132A2 /* MyDataSource.swift */; };
 		22C3123552A54C9E7BE990A8 /* Pods_EatWhat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFB15A3943916E89BDAFD0AF /* Pods_EatWhat.framework */; };
 		508FD4D41E6FF32C00BE8DED /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508FD4D31E6FF32C00BE8DED /* AppDelegate.swift */; };
 		508FD4D61E6FF32C00BE8DED /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508FD4D51E6FF32C00BE8DED /* ViewController.swift */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		17ADC2061E8004DB008132A2 /* MyDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyDataSource.swift; sourceTree = "<group>"; };
 		508FD4D01E6FF32C00BE8DED /* EatWhat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EatWhat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		508FD4D31E6FF32C00BE8DED /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		508FD4D51E6FF32C00BE8DED /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -78,6 +80,7 @@
 				508FD4DA1E6FF32C00BE8DED /* Assets.xcassets */,
 				508FD4DC1E6FF32C00BE8DED /* LaunchScreen.storyboard */,
 				508FD4DF1E6FF32C00BE8DED /* Info.plist */,
+				17ADC2061E8004DB008132A2 /* MyDataSource.swift */,
 			);
 			path = EatWhat;
 			sourceTree = "<group>";
@@ -225,6 +228,7 @@
 			files = (
 				508FD4D61E6FF32C00BE8DED /* ViewController.swift in Sources */,
 				508FD4D41E6FF32C00BE8DED /* AppDelegate.swift in Sources */,
+				17ADC2071E8004DB008132A2 /* MyDataSource.swift in Sources */,
 				508FD4E81E700E1200BE8DED /* LocationManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

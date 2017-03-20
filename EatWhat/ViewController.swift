@@ -8,43 +8,30 @@
 
 import UIKit
 import MapKit
-class StoreListCell: UITableViewCell{
-    @IBOutlet weak var cellStoreName: UILabel!
-    @IBOutlet weak var cellRate: UILabel!
-    @IBOutlet weak var cellDistance: UILabel!
-    @IBOutlet weak var cellTime: UILabel!
-    @IBOutlet weak var cellAddress: UILabel!
-    @IBOutlet weak var cellImage: UIImageView!
-    
-    @IBAction func cellActionCall(_ sender: Any) {
-        
-    }
-}
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
+
+class ViewController: UIViewController {
 
     @IBOutlet weak var sliderBar: UISlider!
     @IBOutlet weak var distanceLable: UILabel!
-    @IBOutlet weak var storeLabel: UILabel!
-    @IBOutlet weak var rateLabel: UILabel!
-    @IBOutlet weak var resultDistanceLabel: UILabel!
-    @IBOutlet weak var resultTimeLabel: UILabel!
-    
-    @IBOutlet weak var address: UILabel!
     @IBOutlet weak var map: MKMapView!
-    @IBOutlet weak var storeImage: UIImageView!
-    
-    let distance = 0// 0.3~2.0 km default 0.5km
+    @IBOutlet weak var tableView: UITableView!
+
+    let distance = 0 // 0.3~2.0 km default 0.5km
     let locationManager = LocationManager()
-    var phone: String?
+//    var phone: String?
     let queue = DispatchQueue.global(qos: .background)
-    var resultList: [[String: Any]]?
-        
-        
+    var dataResource = MyDataSource()
+
     var time:DispatchTime! {
         return DispatchTime.now() + 1.0 // seconds
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        tableView.dataSource = dataResource
+//        tableView.delegate =
+    }
         
     @IBAction func sliderValueChange(_ sender: UISlider) {
         distanceLable.text = String(format: "%.1f", sender.value)
@@ -53,10 +40,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     @IBAction func callStore(_ sender: Any) {
         
-        guard let number = URL(string: "telprompt://" + phone!) else { return }
-        UIApplication.shared.open(number, options: [:], completionHandler: nil)
+        
         
     }
+    
     @IBAction func searchClickListener(_ sender: Any) {
 //                     .requestLocation(completionHandler: { currentLocation in }
         locationManager.requestLocation { (location) in
@@ -64,30 +51,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             self.startTask(curLocation: location)
         }
     }
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1;
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return (resultList?.count)!
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "StoreListCell", for: indexPath) as! StoreListCell
-        if let result = self.resultList?[indexPath.row] {
-            cell.cellStoreName.text = (result["name"] as! String)
-            cell.cellRate.text = "\(result["rating"] as! Double)"
-            cell.cellAddress.text = (result["address"] as! String)
-            self.phone = (result["phone"] as! String)
-        }
-        return cell;
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-    }
-    
     
     func startTask(curLocation: CLLocation) {
         let distance = self.sliderBar.value
@@ -107,14 +70,15 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 let data = data!
                 
                 if let jsonObject = try? JSONSerialization.jsonObject(with: data, options: .mutableContainers), let results = jsonObject as? [[String: Any]] {
-                    self.resultList = results
                     
                     let randomIndex = Int(arc4random_uniform(UInt32(results.count)))
                     print("\(results[randomIndex])")
-                    
+                    self.dataResource.resultList = results
                     DispatchQueue.main.asyncAfter(deadline: self.time, execute:{
                         DispatchQueue.main.async {
-                            self.setData(result: results[randomIndex])
+//                            self.setData(result: results[randomIndex])
+                            self.dataResource.phone = (results[randomIndex]["phone"] as! String)
+                            self.tableView.reloadData()
                         }
                         OperationQueue().addOperation {
                             self.getStoreImageFromURL(result: results[randomIndex])
@@ -205,6 +169,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             if error == nil{
                 DispatchQueue.main.async {
 //                    self.storeImage.image = UIImage(data: imageData)
+                    self.dataResource.imageData = imageData
+                    self.tableView.reloadData()
                 }
             }
             
