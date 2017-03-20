@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		22C3123552A54C9E7BE990A8 /* Pods_EatWhat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFB15A3943916E89BDAFD0AF /* Pods_EatWhat.framework */; };
 		508FD4D41E6FF32C00BE8DED /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508FD4D31E6FF32C00BE8DED /* AppDelegate.swift */; };
 		508FD4D61E6FF32C00BE8DED /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508FD4D51E6FF32C00BE8DED /* ViewController.swift */; };
 		508FD4D91E6FF32C00BE8DED /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 508FD4D71E6FF32C00BE8DED /* Main.storyboard */; };
@@ -24,6 +25,9 @@
 		508FD4DD1E6FF32C00BE8DED /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		508FD4DF1E6FF32C00BE8DED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		508FD4E71E700E1200BE8DED /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		83E7ADA3DD4221964ED2F46E /* Pods-EatWhat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EatWhat.debug.xcconfig"; path = "Pods/Target Support Files/Pods-EatWhat/Pods-EatWhat.debug.xcconfig"; sourceTree = "<group>"; };
+		ED1858B4BD8F07600D47C0A9 /* Pods-EatWhat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EatWhat.release.xcconfig"; path = "Pods/Target Support Files/Pods-EatWhat/Pods-EatWhat.release.xcconfig"; sourceTree = "<group>"; };
+		EFB15A3943916E89BDAFD0AF /* Pods_EatWhat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EatWhat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,17 +35,28 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				22C3123552A54C9E7BE990A8 /* Pods_EatWhat.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		34A7E60FAFD2FF47E4371647 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				EFB15A3943916E89BDAFD0AF /* Pods_EatWhat.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		508FD4C71E6FF32B00BE8DED = {
 			isa = PBXGroup;
 			children = (
 				508FD4D21E6FF32C00BE8DED /* EatWhat */,
 				508FD4D11E6FF32C00BE8DED /* Products */,
+				F48DBC5ACC2C0D00991C02F1 /* Pods */,
+				34A7E60FAFD2FF47E4371647 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -75,6 +90,15 @@
 			name = manager;
 			sourceTree = "<group>";
 		};
+		F48DBC5ACC2C0D00991C02F1 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				83E7ADA3DD4221964ED2F46E /* Pods-EatWhat.debug.xcconfig */,
+				ED1858B4BD8F07600D47C0A9 /* Pods-EatWhat.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -82,9 +106,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 508FD4E21E6FF32C00BE8DED /* Build configuration list for PBXNativeTarget "EatWhat" */;
 			buildPhases = (
+				B3FA9FC412631081F1E9E807 /* [CP] Check Pods Manifest.lock */,
 				508FD4CC1E6FF32B00BE8DED /* Sources */,
 				508FD4CD1E6FF32B00BE8DED /* Frameworks */,
 				508FD4CE1E6FF32B00BE8DED /* Resources */,
+				D17D20CC28B34AB09A02149B /* [CP] Embed Pods Frameworks */,
+				E5011A2F689D703D00A0590B /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -142,6 +169,54 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		B3FA9FC412631081F1E9E807 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		D17D20CC28B34AB09A02149B /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-EatWhat/Pods-EatWhat-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E5011A2F689D703D00A0590B /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-EatWhat/Pods-EatWhat-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		508FD4CC1E6FF32B00BE8DED /* Sources */ = {
@@ -269,6 +344,7 @@
 		};
 		508FD4E31E6FF32C00BE8DED /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 83E7ADA3DD4221964ED2F46E /* Pods-EatWhat.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 9257AB8YS3;
@@ -282,6 +358,7 @@
 		};
 		508FD4E41E6FF32C00BE8DED /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = ED1858B4BD8F07600D47C0A9 /* Pods-EatWhat.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 9257AB8YS3;

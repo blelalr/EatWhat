@@ -131,7 +131,7 @@ class ViewController: UIViewController{
             print("結果: \(response.expectedTravelTime / 60.0), \(response.distance)")
             DispatchQueue.main.async {
                 self.resultTimeLabel.text = "\(String(format: "%.1f", response.expectedTravelTime / 60.0)) 分鐘"
-                self.resultDistanceLabel.text = "\(response.distance) 公尺"
+                self.resultDistanceLabel.text = "\(Int(response.distance)) 公尺"
             }
             
             
