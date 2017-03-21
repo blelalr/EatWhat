@@ -55,7 +55,7 @@ class ViewController: UIViewController {
     func startTask(curLocation: CLLocation) {
         let distance = self.sliderBar.value
         let session = URLSession.shared
-        
+        self.dataResource.curLocation = curLocation
         let url = URL(string: "https://food-locator-dot-hpd-io.appspot.com/v1/location_query?latitude=\(curLocation.coordinate.latitude)&longitude=\(curLocation.coordinate.longitude)&distance=\(distance)")!
         
         print("\(url)")
@@ -76,12 +76,7 @@ class ViewController: UIViewController {
                     self.dataResource.resultList = results
                     DispatchQueue.main.asyncAfter(deadline: self.time, execute:{
                         DispatchQueue.main.async {
-//                            self.setData(result: results[randomIndex])
-                            self.dataResource.phone = (results[randomIndex]["phone"] as! String)
                             self.tableView.reloadData()
-                        }
-                        OperationQueue().addOperation {
-                            self.getStoreImageFromURL(result: results[randomIndex])
                         }
                         OperationQueue().addOperation {
                             self.drawMap(result: results[randomIndex], curLocation: curLocation)
@@ -94,13 +89,6 @@ class ViewController: UIViewController {
             task.resume()
         })
         
-    }
-    
-    func setData(result:[String: Any]){
-//        self.storeLabel.text = (result["name"] as! String)
-//        self.rateLabel.text = "\(result["rating"] as! Double)"
-//        self.address.text = (result["address"] as! String)
-//        self.phone = (result["phone"] as! String)
     }
     
     func drawMap(result: [String : Any], curLocation: CLLocation){
@@ -159,25 +147,7 @@ class ViewController: UIViewController {
     }
 
     
-    func getStoreImageFromURL(result: [String : Any]){
-        var imageData = (data: Data())
-        let url = URL(string: result["photo"] as! String)
-        let session = URLSession.shared
-        let dataTask = session.dataTask(with: url!, completionHandler: { (data, response, error) in
-            imageData.append(data!)
-        
-            if error == nil{
-                DispatchQueue.main.async {
-//                    self.storeImage.image = UIImage(data: imageData)
-                    self.dataResource.imageData = imageData
-                    self.tableView.reloadData()
-                }
-            }
-            
-        })
-        dataTask.resume()
-        
-    }
+    
     
 }
 

@@ -15,6 +15,7 @@
 		508FD4DB1E6FF32C00BE8DED /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 508FD4DA1E6FF32C00BE8DED /* Assets.xcassets */; };
 		508FD4DE1E6FF32C00BE8DED /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 508FD4DC1E6FF32C00BE8DED /* LaunchScreen.storyboard */; };
 		508FD4E81E700E1200BE8DED /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508FD4E71E700E1200BE8DED /* LocationManager.swift */; };
+		50E2A29D1E8122F1007BA5F3 /* Place.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E2A29C1E8122F1007BA5F3 /* Place.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 		508FD4DD1E6FF32C00BE8DED /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		508FD4DF1E6FF32C00BE8DED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		508FD4E71E700E1200BE8DED /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		50E2A29C1E8122F1007BA5F3 /* Place.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Place.swift; sourceTree = "<group>"; };
 		83E7ADA3DD4221964ED2F46E /* Pods-EatWhat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EatWhat.debug.xcconfig"; path = "Pods/Target Support Files/Pods-EatWhat/Pods-EatWhat.debug.xcconfig"; sourceTree = "<group>"; };
 		ED1858B4BD8F07600D47C0A9 /* Pods-EatWhat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EatWhat.release.xcconfig"; path = "Pods/Target Support Files/Pods-EatWhat/Pods-EatWhat.release.xcconfig"; sourceTree = "<group>"; };
 		EFB15A3943916E89BDAFD0AF /* Pods_EatWhat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EatWhat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -73,6 +75,7 @@
 		508FD4D21E6FF32C00BE8DED /* EatWhat */ = {
 			isa = PBXGroup;
 			children = (
+				50E2A29B1E8122BD007BA5F3 /* module */,
 				508FD4E61E700DC400BE8DED /* manager */,
 				508FD4D31E6FF32C00BE8DED /* AppDelegate.swift */,
 				508FD4D51E6FF32C00BE8DED /* ViewController.swift */,
@@ -91,6 +94,14 @@
 				508FD4E71E700E1200BE8DED /* LocationManager.swift */,
 			);
 			name = manager;
+			sourceTree = "<group>";
+		};
+		50E2A29B1E8122BD007BA5F3 /* module */ = {
+			isa = PBXGroup;
+			children = (
+				50E2A29C1E8122F1007BA5F3 /* Place.swift */,
+			);
+			name = module;
 			sourceTree = "<group>";
 		};
 		F48DBC5ACC2C0D00991C02F1 /* Pods */ = {
@@ -230,6 +241,7 @@
 				508FD4D41E6FF32C00BE8DED /* AppDelegate.swift in Sources */,
 				17ADC2071E8004DB008132A2 /* MyDataSource.swift in Sources */,
 				508FD4E81E700E1200BE8DED /* LocationManager.swift in Sources */,
+				50E2A29D1E8122F1007BA5F3 /* Place.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
