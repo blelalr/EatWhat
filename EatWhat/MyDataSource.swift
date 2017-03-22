@@ -27,6 +27,13 @@ class StoreListCell: UITableViewCell {
 class MyDataSource: NSObject, UITableViewDelegate, UITableViewDataSource {
     var resultList: [[String: Any]]?
     var curLocation: CLLocation?
+    var dirResult: [String : Any]?
+    
+    var dispatchTime:DispatchTime! {
+        return DispatchTime.now() + 1.0 // seconds
+    }
+    let queue = DispatchQueue.global(qos: .background)
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1;
     }
@@ -41,19 +48,48 @@ class MyDataSource: NSObject, UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "StoreListCell", for: indexPath) as! StoreListCell
         if let result = resultList {
-            cell.cellStoreName.text = (result[indexPath.row]["name"] as! String)
-            cell.cellRate.text = "\(result[indexPath.row]["rating"] as! Double)"
-            cell.cellAddress.text = (result[indexPath.row]["address"] as! String)
-            cell.phone = (result[indexPath.row]["phone"] as! String)
+            
+            
             var imageData = Data()
             let url = URL(string: result[indexPath.row]["photo"] as! String)
             let session = URLSession.shared
+            
             let dataTask = session.dataTask(with: url!, completionHandler: { (data, response, error) in
+                if let error = error {
+                    print("Error: \(error)")
+                    return
+                }
+                
+//                OperationQueue().addOperation {
+                    if let location = self.curLocation {
+                        self.queue.async(execute: {
+                            self.drawMap(result: result[indexPath.row], curLocation: location).calculateETA(completionHandler: { response, error in
+                                if let error = error {
+                                    print("Error: \(error)")
+                                    return
+                                }
+                                
+                                let response = response!
+                                DispatchQueue.main.asyncAfter(deadline: self.dispatchTime, execute:{
+                                    
+                                    cell.cellDistance.text = "\(String(format: "%.1f", response.expectedTravelTime / 60.0)) 分鐘"
+                                    cell.cellTime.text = "\(Int(response.distance)) 公尺"
+                    
+                                })
+
+                            })
+                           
+                        })
+//                    }
+                }
+                
                 imageData.append(data!)
-                if error == nil{
-                    DispatchQueue.main.async {
-                        cell.cellImage.image = UIImage(data: imageData)
-                    }
+                DispatchQueue.main.async {
+                    cell.cellStoreName.text = (result[indexPath.row]["name"] as! String)
+                    cell.cellRate.text = "\(result[indexPath.row]["rating"] as! Double)"
+                    cell.cellAddress.text = (result[indexPath.row]["address"] as! String)
+                    cell.phone = (result[indexPath.row]["phone"] as! String)
+                    cell.cellImage.image = UIImage(data: imageData)
                 }
                 
             })
@@ -63,68 +99,24 @@ class MyDataSource: NSObject, UITableViewDelegate, UITableViewDataSource {
         return cell;
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let result = resultList {
-//            self.drawMap(result:result[indexPath.row])
-        }
-    
+    func drawMap(result: [String : Any], curLocation: CLLocation) -> MKDirections {
+        let currentLocationPlacemark = MKPlacemark(coordinate: curLocation.coordinate, addressDictionary: nil)
+        let currentLocationMapItem = MKMapItem(placemark: currentLocationPlacemark)
         
-    }
-    
-//    func drawMap(result: [String : Any]){
-//        let currentLocationPlacemark = MKPlacemark(coordinate: (curLocation?.coordinate)!, addressDictionary: nil)
-//        let currentLocationMapItem = MKMapItem(placemark: currentLocationPlacemark)
-//        
-//        let latitude = result["latitude"] as! Double
-//        let longitude = result["longitude"] as! Double
-//        
-//        let destionationCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-//        let destinationPlacemark = MKPlacemark(coordinate: destionationCoordinate, addressDictionary: nil)
-//        let destinationMapItem = MKMapItem(placemark: destinationPlacemark)
-//        
-//        let request = MKDirectionsRequest()
-//        request.source = currentLocationMapItem
-//        request.destination = destinationMapItem
-//        request.transportType = .walking
-//        
-//        //        let directions = MKDirections(request: request)
-//        //        directions.calculate(completionHandler: { (response : MKDirectionsResponse?, error : Error?) in
-//        //            response?.routes.first?.polyline
-//        //        })
-//        
-//        
-//        let directions = MKDirections(request: request)
-//        directions.calculateETA(completionHandler: { response, error in
-//            
-//            if let error = error {
-//                print("路徑規劃錯誤: \(error)")
-//                return
-//            }
-//            
-//            let response = response!
-//            print("結果: \(response.expectedTravelTime / 60.0), \(response.distance)")
-//            DispatchQueue.main.async {
-//                //                self.resultTimeLabel.text = "\(String(format: "%.1f", response.expectedTravelTime / 60.0)) 分鐘"
-//                //                self.resultDistanceLabel.text = "\(Int(response.distance)) 公尺"
-//            }
-//            
-//            
-//            let pointAnnotation  = MKPointAnnotation()
-//            pointAnnotation.coordinate = destionationCoordinate
-//            self.map.removeAnnotations(self.map.annotations)
-//            self.map.addAnnotation(pointAnnotation)
-//            self.map.showsUserLocation = true
-//            
-//            let degree = 1/111 * 0.5
-//            var mapRegion = MKCoordinateRegion()
-//            mapRegion.center = destionationCoordinate
-//            mapRegion.span.latitudeDelta = degree
-//            mapRegion.span.longitudeDelta = degree
-//            
-//            self.map.setRegion(mapRegion, animated: true)
-//            
-//        })
-//    }
+        let latitude = result["latitude"] as! Double
+        let longitude = result["longitude"] as! Double
+        
+        let destionationCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        let destinationPlacemark = MKPlacemark(coordinate: destionationCoordinate, addressDictionary: nil)
+        let destinationMapItem = MKMapItem(placemark: destinationPlacemark)
 
-    
+        let request = MKDirectionsRequest()
+        request.source = currentLocationMapItem
+        request.destination = destinationMapItem
+        request.transportType = .walking
+
+        let directions = MKDirections(request: request)
+        
+        return directions
+    }
 }

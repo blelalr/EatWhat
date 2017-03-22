@@ -363,6 +363,7 @@
 			baseConfigurationReference = 83E7ADA3DD4221964ED2F46E /* Pods-EatWhat.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 9257AB8YS3;
 				INFOPLIST_FILE = EatWhat/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -377,6 +378,7 @@
 			baseConfigurationReference = ED1858B4BD8F07600D47C0A9 /* Pods-EatWhat.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 9257AB8YS3;
 				INFOPLIST_FILE = EatWhat/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

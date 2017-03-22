@@ -10,95 +10,81 @@ import UIKit
 import MapKit
 
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UITableViewDelegate, MKMapViewDelegate{
 
     @IBOutlet weak var sliderBar: UISlider!
     @IBOutlet weak var distanceLable: UILabel!
     @IBOutlet weak var map: MKMapView!
     @IBOutlet weak var tableView: UITableView!
 
-    let distance = 0 // 0.3~2.0 km default 0.5km
+    var distance: Double? // 0.3~2.0 km default 0.5km
     let locationManager = LocationManager()
-//    var phone: String?
-    let queue = DispatchQueue.global(qos: .background)
     var dataResource = MyDataSource()
-
-    var time:DispatchTime! {
-        return DispatchTime.now() + 1.0 // seconds
-    }
+    var curLocation: CLLocation?
+    var myRoute : MKRoute!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.dataSource = dataResource
-//        tableView.delegate =
-    }
-        
-    @IBAction func sliderValueChange(_ sender: UISlider) {
-        distanceLable.text = String(format: "%.1f", sender.value)
+        tableView.delegate = self
+        map.delegate = self
+        locationManager.requestLocation { (location) in
+            self.curLocation = location
+            self.dataResource.curLocation = location
+            self.startTask(curLocation: self.curLocation!)
+        }
         
     }
     
-    @IBAction func callStore(_ sender: Any) {
-        
-        
-        
+    @IBAction func sliderValueChange(_ sender: UISlider) {
+        distanceLable.text = String(format: "%.1f", sender.value)
     }
     
     @IBAction func searchClickListener(_ sender: Any) {
-//                     .requestLocation(completionHandler: { currentLocation in }
         locationManager.requestLocation { (location) in
-            print("from ViewController: \(location)")
-            self.startTask(curLocation: location)
+            self.curLocation = location
+            self.dataResource.curLocation = location
+            self.startTask(curLocation: self.curLocation!)
         }
     }
     
     func startTask(curLocation: CLLocation) {
-        let distance = self.sliderBar.value
+        distance = Double(self.sliderBar.value)
         let session = URLSession.shared
-        self.dataResource.curLocation = curLocation
-        let url = URL(string: "https://food-locator-dot-hpd-io.appspot.com/v1/location_query?latitude=\(curLocation.coordinate.latitude)&longitude=\(curLocation.coordinate.longitude)&distance=\(distance)")!
-        
+        let url = URL(string: "https://food-locator-dot-hpd-io.appspot.com/v1/location_query?latitude=\(curLocation.coordinate.latitude)&longitude=\(curLocation.coordinate.longitude)&distance=\(distance!)")!
         print("\(url)")
         
-        queue.async(execute: {
-            let task = session.dataTask(with: url, completionHandler: { (data, response, error) in
-                if let error = error {
-                    print("API下載錯誤: \(error)")
-                    return
+        let task = session.dataTask(with: url, completionHandler: { (data, response, error) in
+            if let error = error {
+                print("API下載錯誤: \(error)")
+                return
+            }
+            let data = data!
+            if let jsonObject = try? JSONSerialization.jsonObject(with: data, options: .mutableContainers), let results = jsonObject as? [[String: Any]] {
+                self.dataResource.resultList = results
+                DispatchQueue.main.async {
+                        let randomIndex = Int(arc4random_uniform(UInt32(results.count)))
+                        self.drawMap(result: results[randomIndex])
+                        self.tableView.reloadData()
+                        self.tableView.selectRow(at: IndexPath.init(row: randomIndex, section: 0), animated: true, scrollPosition: UITableViewScrollPosition.middle);
                 }
-                
-                let data = data!
-                
-                if let jsonObject = try? JSONSerialization.jsonObject(with: data, options: .mutableContainers), let results = jsonObject as? [[String: Any]] {
-                    
-                    let randomIndex = Int(arc4random_uniform(UInt32(results.count)))
-                    print("\(results[randomIndex])")
-                    self.dataResource.resultList = results
-                    DispatchQueue.main.asyncAfter(deadline: self.time, execute:{
-                        DispatchQueue.main.async {
-                            self.tableView.reloadData()
-                        }
-                        OperationQueue().addOperation {
-                            self.drawMap(result: results[randomIndex], curLocation: curLocation)
-                        }
-                        
-                    })
-                }
-                
-            })
-            task.resume()
+            }
         })
-        
+        task.resume()
     }
     
-    func drawMap(result: [String : Any], curLocation: CLLocation){
-        let currentLocationPlacemark = MKPlacemark(coordinate: curLocation.coordinate, addressDictionary: nil)
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let result = self.dataResource.resultList {
+            print("\(result[indexPath.row])")
+            drawMap(result: result[indexPath.row])
+        }
+    }
+    
+    func drawMap(result: [String : Any]){
+        let currentLocationPlacemark = MKPlacemark(coordinate: self.curLocation!.coordinate, addressDictionary: nil)
         let currentLocationMapItem = MKMapItem(placemark: currentLocationPlacemark)
         
-        let latitude = result["latitude"] as! Double
-        let longitude = result["longitude"] as! Double
-        
-        let destionationCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        let destionationCoordinate = CLLocationCoordinate2D(latitude: result["latitude"] as! Double, longitude: result["longitude"] as! Double)
         let destinationPlacemark = MKPlacemark(coordinate: destionationCoordinate, addressDictionary: nil)
         let destinationMapItem = MKMapItem(placemark: destinationPlacemark)
         
@@ -107,47 +93,45 @@ class ViewController: UIViewController {
         request.destination = destinationMapItem
         request.transportType = .walking
         
-        //        let directions = MKDirections(request: request)
-        //        directions.calculate(completionHandler: { (response : MKDirectionsResponse?, error : Error?) in
-        //            response?.routes.first?.polyline
-        //        })
-        
-        
-        let directions = MKDirections(request: request)
-        directions.calculateETA(completionHandler: { response, error in
-            
-            if let error = error {
-                print("路徑規劃錯誤: \(error)")
-                return
-            }
-            
-            let response = response!
-            print("結果: \(response.expectedTravelTime / 60.0), \(response.distance)")
-            DispatchQueue.main.async {
-//                self.resultTimeLabel.text = "\(String(format: "%.1f", response.expectedTravelTime / 60.0)) 分鐘"
-//                self.resultDistanceLabel.text = "\(Int(response.distance)) 公尺"
-            }
-            
+        DispatchQueue.main.async {
             
             let pointAnnotation  = MKPointAnnotation()
             pointAnnotation.coordinate = destionationCoordinate
+            
             self.map.removeAnnotations(self.map.annotations)
             self.map.addAnnotation(pointAnnotation)
             self.map.showsUserLocation = true
             
-            let degree = 1/111 * 0.5
+            let directions = MKDirections(request: request)
+            
+            directions.calculate(completionHandler: {response, error in
+                if error == nil {
+                    if let route = self.myRoute {
+                        self.map.remove(route.polyline)
+                    }
+                    self.myRoute = response!.routes[0] as MKRoute
+                    self.map.add(self.myRoute.polyline)
+                }
+            })
+            
+            let degree = 1/111 * self.distance!
             var mapRegion = MKCoordinateRegion()
             mapRegion.center = destionationCoordinate
             mapRegion.span.latitudeDelta = degree
             mapRegion.span.longitudeDelta = degree
             
             self.map.setRegion(mapRegion, animated: true)
-            
-        })
-    }
+        }
 
+    }
     
-    
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        let myLineRenderer = MKPolylineRenderer(polyline: myRoute.polyline)
+        myLineRenderer.strokeColor = UIColor.blue
+        myLineRenderer.lineWidth = 5
+        
+        return myLineRenderer
+    }
     
 }
 
