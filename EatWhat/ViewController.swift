@@ -28,12 +28,20 @@ class ViewController: UIViewController, UITableViewDelegate, MKMapViewDelegate{
         tableView.dataSource = dataResource
         tableView.delegate = self
         map.delegate = self
-        locationManager.requestLocation { (location) in
+        requestLocation()
+        
+    }
+    
+    func requestLocation(){
+        locationManager.requestLocation { (location, error) in
+            if let error = error {
+                self.locationErrorAlert(error: error)
+                return
+            }
             self.curLocation = location
             self.dataResource.curLocation = location
             self.startTask(curLocation: self.curLocation!)
         }
-        
     }
     
     @IBAction func sliderValueChange(_ sender: UISlider) {
@@ -41,11 +49,7 @@ class ViewController: UIViewController, UITableViewDelegate, MKMapViewDelegate{
     }
     
     @IBAction func searchClickListener(_ sender: Any) {
-        locationManager.requestLocation { (location) in
-            self.curLocation = location
-            self.dataResource.curLocation = location
-            self.startTask(curLocation: self.curLocation!)
-        }
+        requestLocation()
     }
     
     func startTask(curLocation: CLLocation) {
@@ -57,6 +61,7 @@ class ViewController: UIViewController, UITableViewDelegate, MKMapViewDelegate{
         let task = session.dataTask(with: url, completionHandler: { (data, response, error) in
             if let error = error {
                 print("API下載錯誤: \(error)")
+                self.apiErrorAlert(error: error)
                 return
             }
             let data = data!
@@ -71,6 +76,54 @@ class ViewController: UIViewController, UITableViewDelegate, MKMapViewDelegate{
             }
         })
         task.resume()
+    }
+    
+    func apiErrorAlert(error: Error) {
+        // 建立一個提示框
+        let alertController = UIAlertController(
+            title: "下載錯誤",
+            message: "請確認網路連線狀態",
+            preferredStyle: .alert)
+        
+        // 建立[確認]按鈕
+        let okAction = UIAlertAction(
+            title: "重新下載",
+            style: .default,
+            handler: {
+                (action: UIAlertAction!) -> Void in
+                self.startTask(curLocation: self.curLocation!)
+        })
+        alertController.addAction(okAction)
+        
+        // 顯示提示框
+        self.present(
+            alertController,
+            animated: true,
+            completion: nil)
+    }
+    
+    func locationErrorAlert(error: Error) {
+        // 建立一個提示框
+        let alertController = UIAlertController(
+            title: "定位錯誤",
+            message: "請確認是否開啟定位服務",
+            preferredStyle: .alert)
+        
+        // 建立[確認]按鈕
+        let okAction = UIAlertAction(
+            title: "重新定位",
+            style: .default,
+            handler: {
+                (action: UIAlertAction!) -> Void in
+                self.requestLocation()
+        })
+        alertController.addAction(okAction)
+        
+        // 顯示提示框
+        self.present(
+            alertController,
+            animated: true,
+            completion: nil)
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

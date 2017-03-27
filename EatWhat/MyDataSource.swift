@@ -24,7 +24,7 @@ class StoreListCell: UITableViewCell {
     }
 }
 
-class MyDataSource: NSObject, UITableViewDelegate, UITableViewDataSource {
+class MyDataSource: NSObject, UITableViewDelegate, UITableViewDataSource{
     var resultList: [[String: Any]]?
     var curLocation: CLLocation?
     var dirResult: [String : Any]?
@@ -48,8 +48,6 @@ class MyDataSource: NSObject, UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "StoreListCell", for: indexPath) as! StoreListCell
         if let result = resultList {
-            
-            
             var imageData = Data()
             let url = URL(string: result[indexPath.row]["photo"] as! String)
             let session = URLSession.shared
@@ -66,6 +64,7 @@ class MyDataSource: NSObject, UITableViewDelegate, UITableViewDataSource {
                             self.drawMap(result: result[indexPath.row], curLocation: location).calculateETA(completionHandler: { response, error in
                                 if let error = error {
                                     print("Error: \(error)")
+                                    
                                     return
                                 }
                                 

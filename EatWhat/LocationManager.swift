@@ -4,7 +4,7 @@ import CoreLocation
 class LocationManager: NSObject, CLLocationManagerDelegate {
     
     let locationManager = CLLocationManager()
-    var completionHandler: ((CLLocation) -> Void)?
+    var completionHandler: ((CLLocation?, Error?) -> Void)?
     
     var isRequestingLocation = false
     
@@ -13,7 +13,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         locationManager.delegate = self
     }
     
-    func requestLocation(completionHandler: @escaping (CLLocation) -> Void) {
+    func requestLocation(completionHandler: @escaping ((CLLocation?, Error?) -> Void)){
         self.completionHandler = completionHandler
         isRequestingLocation = true
         
@@ -33,12 +33,13 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         
         isRequestingLocation = false
         let location = locations.first!
-        completionHandler?(location)
+        completionHandler?(location, nil)
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         
         print("didFailWithError")
+        completionHandler?(nil, error)
         
     }
     
